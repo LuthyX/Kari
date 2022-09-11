@@ -17,7 +17,6 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api")
 public class AppUserController {
 
