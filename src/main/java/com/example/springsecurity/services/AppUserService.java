@@ -19,10 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -52,12 +49,12 @@ public class AppUserService implements UserDetailsService{
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
     }
 
+    public Optional<AppUser> findbyemail(String email){
+        return appUserRepository.findByEmail(email);
+    }
+
     public String saveUser(AppUser appUser
     ) {
-        boolean userExists = appUserRepository.findByEmail(appUser.getEmail()).isPresent();
-        if (userExists) {
-            throw new IllegalStateException("Email is already taken.. Try Another Email");
-        };
         String encodedPassword = bCryptPasswordEncoder.encode(appUser.getPassword());
         if(appUser.getUserType().name() == "CUSTOMER") {
             String rol = "ROLE_USER";

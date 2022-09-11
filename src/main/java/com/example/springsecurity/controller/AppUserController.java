@@ -7,6 +7,7 @@ import com.example.springsecurity.models.Role;
 import com.example.springsecurity.request.*;
 import com.example.springsecurity.services.AppUserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api")
 public class AppUserController {
 
@@ -26,8 +28,12 @@ public class AppUserController {
         return ResponseEntity.ok().body(appUserService.getUsers());
     }
 
-    @PostMapping( "/user/save")
-    private ResponseEntity<String>saveUser(@RequestBody AppUser user){
+
+    @PostMapping( "/save/user")
+    private ResponseEntity<?>saveUser(@RequestBody AppUser user){
+        if (appUserService.findbyemail(user.getEmail()).isPresent()){
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
         return ResponseEntity.created(uri).body(appUserService.saveUser(user));
     }
@@ -85,10 +91,5 @@ public class AppUserController {
 
     }
 
-
-//    @PostMapping("/login")
-//    public ResponseEntity<?> loginUser(@RequestBody LoginForm loginForm){
-//        return
-//    }
 }
 
