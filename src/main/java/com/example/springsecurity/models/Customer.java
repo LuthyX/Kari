@@ -26,7 +26,7 @@ public class Customer {
     private AppUser appUser;
     private Long appuserid;
 
-    private double wallet= 100.0;
+    private double wallet= 100.00;
 
     private String phoneNumber;
 

@@ -27,6 +27,8 @@ public class Package {
 
     private Double fee;
 
+    private Boolean paid = false;
+
     @Enumerated(EnumType.STRING)
     private PackageStatus status = PackageStatus.PROCESSING;
 
@@ -114,5 +116,11 @@ public class Package {
         this.delivery = delivery;
     }
 
+    public Boolean getPaid() {
+        return paid;
+    }
 
+    public void setPaid(Boolean paid) {
+        this.paid = paid;
+    }
 }

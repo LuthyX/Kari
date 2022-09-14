@@ -2,9 +2,12 @@ package com.example.springsecurity.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.springsecurity.models.AppUser;
+import com.example.springsecurity.services.AppUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -29,16 +32,29 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     private final AuthenticationManager authenticationManager;
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager){
+    private AppUserService appUserService;
+
+
+
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, AppUserService appUserService){
         this.authenticationManager=authenticationManager;
+        this.appUserService = appUserService;
     }
+
+
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        String username= request.getParameter("username");
-        String password = request.getParameter("password");
-        log.info("Username is: {}", username);
-        log.info("Password is: {}", password);
+        String username, password;
+
+        try {
+            Map<String, String> requestMap = new ObjectMapper().readValue(request.getInputStream(), Map.class);
+            username = requestMap.get("username");
+            password = requestMap.get("password");
+        } catch (IOException e) {
+            throw new AuthenticationServiceException(e.getMessage(), e);
+        }
+
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,password);
         return authenticationManager.authenticate(authenticationToken);
     }
@@ -60,9 +76,15 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .sign(algorithm);
 //        response.setHeader("access_token", acccess_token);
 //        response.setHeader("refresh_token" ,refresh_token);
-        Map<String, String> tokens = new HashMap<>();
+        AppUser appUser = appUserService.findbyemail(user.getUsername()).orElseThrow(()-> new IllegalStateException("not found"));
+
+        Map<String, Object> tokens = new HashMap<>();
         tokens.put("access_token", acccess_token);
         tokens.put("refresh_token", refresh_token);
+        tokens.put("username", user.getUsername());
+        tokens.put("id", appUser.getId());
+        tokens.put("firstName", appUser.getFirstName());
+
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }

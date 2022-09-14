@@ -17,6 +17,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin("*")
 @RequestMapping("/api")
 public class AppUserController {
 
@@ -68,6 +69,10 @@ public class AppUserController {
     private List<Package> getAllPackages(){
         return appUserService.getAllPackages();
     }
+    @GetMapping("/wallet/{id}")
+    private Double getWalletBalance(@PathVariable("id") Long id){
+        return appUserService.getWalletBalance(id);
+    }
 
     @PostMapping("/package/find")
     private String findPackageByCode(@RequestBody TrackCodeRequest trackcode){
@@ -82,6 +87,11 @@ public class AppUserController {
     @PutMapping("/package/delivery")
     private String DeliveryType(@RequestBody DeliveryTypeRequest request){
         return appUserService.ChangeDeliveryType(request);
+    }
+
+    @PostMapping("/package/pay")
+    private ResponseEntity<?> payPackage(@RequestBody PayRequest payRequest){
+        return ResponseEntity.ok().body(appUserService.payPackage(payRequest));
     }
 
     @GetMapping("package/{id}")
