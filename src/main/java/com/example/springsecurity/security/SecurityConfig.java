@@ -73,7 +73,7 @@ public CorsWebFilter corsWebFilter() {
     protected void configure(HttpSecurity http) throws Exception {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean(), appUserService);
         customAuthenticationFilter.setFilterProcessesUrl("/api/login");
-        http.csrf().disable().cors().and().headers().frameOptions().disable();
+        http.csrf().disable();
         http.authorizeRequests().antMatchers(POST,"/api/login/**").permitAll();
         http.authorizeRequests().antMatchers(POST,"/api/save/user/**").permitAll();
         http.authorizeRequests().antMatchers(POST,"/api/package/find").permitAll();
