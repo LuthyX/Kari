@@ -15,11 +15,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.CorsWebFilter;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -53,27 +48,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //        source.registerCorsConfiguration("/**", configuration);
 //        return source;
 //    }
-@Bean
-public CorsWebFilter corsWebFilter() {
-    CorsConfiguration corsConfig = new CorsConfiguration();
-    corsConfig.setAllowedOrigins(Arrays.asList("https://karip-d1f31.web.app"));
-    corsConfig.setMaxAge(3600L);
-    corsConfig.addAllowedMethod("*");
-    corsConfig.addAllowedHeader("Requestor-Type");
-    corsConfig.addExposedHeader("X-Get-Header");
 
-    UrlBasedCorsConfigurationSource source =
-            new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", corsConfig);
-
-    return new CorsWebFilter(source);
-}
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable().cors().and().headers().frameOptions().disable();
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean(), appUserService);
         customAuthenticationFilter.setFilterProcessesUrl("/api/login");
-        http.csrf().disable();
+
         http.authorizeRequests().antMatchers(POST,"/api/login/**").permitAll();
         http.authorizeRequests().antMatchers(POST,"/api/save/user/**").permitAll();
         http.authorizeRequests().antMatchers(POST,"/api/package/find").permitAll();
