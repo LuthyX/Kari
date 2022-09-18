@@ -1,9 +1,7 @@
 package com.example.springsecurity.controller;
 
-import com.example.springsecurity.models.AppUser;
-import com.example.springsecurity.models.Customer;
+import com.example.springsecurity.models.*;
 import com.example.springsecurity.models.Package;
-import com.example.springsecurity.models.Role;
 import com.example.springsecurity.request.*;
 import com.example.springsecurity.services.AppUserService;
 import lombok.AllArgsConstructor;
@@ -55,6 +53,11 @@ public class AppUserController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/contact")
+    public void saveContact(@RequestBody Contact contact){
+        appUserService.saveContact(contact);
+    }
+
     @GetMapping("/customers")
     private List<Customer> getCustomers(){
         return appUserService.getCustomers();
@@ -75,8 +78,13 @@ public class AppUserController {
     }
 
     @PostMapping("/package/find")
-    private String findPackageByCode(@RequestBody TrackCodeRequest trackcode){
+    private Package findPackageByCode(@RequestBody TrackCodeRequest trackcode){
         return appUserService.findStatusByTrackcode(trackcode);
+    }
+
+    @GetMapping("/history/{id}")
+    private List<History> getPayHistory(@PathVariable("id") Long id){
+        return appUserService.getPayHistory(id);
     }
 
     @PutMapping("/package/changestatus")
@@ -99,6 +107,29 @@ public class AppUserController {
         return appUserService.getPackagesByCustomer(id);
 
     }
+
+//    @PostMapping("/create-checkout-session")
+//    public void createCheckOutSession(){
+//        post("/create-checkout-session", (request, response) -> {
+//            String YOUR_DOMAIN = "http://localhost:4242";
+//            SessionCreateParams params =
+//                    SessionCreateParams.builder()
+//                            .setMode(SessionCreateParams.Mode.PAYMENT)
+//                            .setSuccessUrl(YOUR_DOMAIN + "/success.html")
+//                            .setCancelUrl(YOUR_DOMAIN + "/cancel.html")
+//                            .addLineItem(
+//                                    SessionCreateParams.LineItem.builder()
+//                                            .setQuantity(1L)
+//                                            // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+//                                            .setPrice("{{PRICE_ID}}")
+//                                            .build())
+//                            .build();
+//            Session session = Session.create(params);
+//
+//            response.redirect(session.getUrl(), 303);
+//            return "";
+//        });
+//    }
 
 }
 

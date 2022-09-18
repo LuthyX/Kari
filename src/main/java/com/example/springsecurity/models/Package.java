@@ -1,9 +1,11 @@
 package com.example.springsecurity.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 
@@ -28,6 +30,8 @@ public class Package {
     private Double fee;
 
     private Boolean paid = false;
+
+    private LocalDate deliveryDate = null;
 
     @Enumerated(EnumType.STRING)
     private PackageStatus status = PackageStatus.PROCESSING;
@@ -122,5 +126,13 @@ public class Package {
 
     public void setPaid(Boolean paid) {
         this.paid = paid;
+    }
+
+    public LocalDate getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(LocalDate deliveryDate) {
+        this.deliveryDate = deliveryDate;
     }
 }

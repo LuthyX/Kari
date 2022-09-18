@@ -3,10 +3,7 @@ package com.example.springsecurity.services;
 import com.example.springsecurity.email.EmailSender;
 import com.example.springsecurity.models.Package;
 import com.example.springsecurity.models.*;
-import com.example.springsecurity.repositories.AppUserRepository;
-import com.example.springsecurity.repositories.CustomerRepository;
-import com.example.springsecurity.repositories.PackageRepository;
-import com.example.springsecurity.repositories.RoleRepository;
+import com.example.springsecurity.repositories.*;
 import com.example.springsecurity.request.*;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,6 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -35,6 +35,10 @@ public class AppUserService implements UserDetailsService{
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private final PackageRepository packageRepository;
+
+    private final HistoryRepository historyRepository;
+
+    private final ContactRepository contactRepository;
 //    private final ConfirmationTokenService confirmationTokenService;
 
 
@@ -70,6 +74,10 @@ public class AppUserService implements UserDetailsService{
         return "saved";
 
 
+        }
+
+        public List<History> getPayHistory(Long id){
+        return historyRepository.findByCustomerid(id);
         }
     public List<Customer> getCustomers(){
         return customerRepository.findAll();
@@ -124,19 +132,33 @@ public class AppUserService implements UserDetailsService{
         cust.setWallet(cust.getWallet()-bpackage.getFee());
        apackage.setStatus(PackageStatus.valueOf("PACKED"));
        apackage.setPaid(true);
+       apackage.setDeliveryDate(LocalDate.now().plusDays(7));
+
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+       LocalDateTime now = LocalDateTime.now();
+       String formatime= now.format(format);
+       String info = "Paid $" + apackage.getFee() + " for package at " + formatime;
+
+       History history = new History(info, cust.getId(), now);
+       historyRepository.save(history);
         emailSender.send(
                 appUser.getEmail(),
                 payEmail(appUser.getFirstName(), bpackage.getTrackcode(), bpackage.getFee()));
        return packageRepository.save(apackage);
     }
 
-    public String findStatusByTrackcode(TrackCodeRequest trackcode){
+    public void saveContact(Contact contact){
+        contactRepository.save(contact);
+
+    }
+
+    public Package findStatusByTrackcode(TrackCodeRequest trackcode){
         Package aPackage = packageRepository.findByTrackcode(trackcode.getTrackcode());
         if (aPackage == null){
             throw new IllegalStateException("Code is not valid");
         }
         String status = String.valueOf(aPackage.getStatus());
-        return status;
+        return aPackage;
 
 
     }
