@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@CrossOrigin("*")
+//@CrossOrigin("https://karip-d1f31.web.app")
 @RequestMapping("/api")
 public class AppUserController {
 
