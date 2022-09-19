@@ -25,6 +25,8 @@ public class Package {
 
     private String trackcode;
 
+    private Integer confirmationCode;
+
     private Double weight;
 
     private Double fee;
@@ -41,11 +43,12 @@ public class Package {
 
 
 
-    public Package(Customer customer, Long customerid, String trackcode, Double weight) {
+    public Package(Customer customer, Long customerid, String trackcode, Double weight, Integer confirmationCode) {
         this.customer = customer;
         this.customerid = customerid;
         this.trackcode = trackcode;
         this.weight = weight;
+        this.confirmationCode = confirmationCode;
     }
 
     public Long getId() {
@@ -134,5 +137,12 @@ public class Package {
 
     public void setDeliveryDate(LocalDate deliveryDate) {
         this.deliveryDate = deliveryDate;
+    }
+    public Integer getConfirmationCode() {
+        return confirmationCode;
+    }
+
+    public void setConfirmationCode(Integer confirmationCode) {
+        this.confirmationCode = confirmationCode;
     }
 }
