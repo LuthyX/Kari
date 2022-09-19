@@ -1,7 +1,7 @@
 package com.example.springsecurity.controller;
 
-import com.example.springsecurity.models.*;
 import com.example.springsecurity.models.Package;
+import com.example.springsecurity.models.*;
 import com.example.springsecurity.request.*;
 import com.example.springsecurity.services.AppUserService;
 import lombok.AllArgsConstructor;
@@ -66,6 +66,11 @@ public class AppUserController {
     @PostMapping("/package/add")
     private String addPackage(@RequestBody PackageRequest packageRequest ){
         return appUserService.addPackage(packageRequest);
+    }
+
+    @PostMapping("/customer/details")
+    private Customer updateCustomerDetails(@RequestBody UpdateCustomerDetails details){
+        return appUserService.updateCustomerDetails(details);
     }
 
     @GetMapping("/packages")

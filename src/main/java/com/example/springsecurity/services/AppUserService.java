@@ -183,6 +183,13 @@ public class AppUserService implements UserDetailsService{
         return "Status Changed";
     }
 
+    public Customer updateCustomerDetails( UpdateCustomerDetails details){
+        Customer cust = customerRepository.findByCustomerEmail(details.getEmail());
+        cust.setAddress(details.getAddress());
+        cust.setPhoneNumber(details.getPhoneNumber());
+        return  customerRepository.save(cust);
+    }
+
 
 
     public String ChangeDeliveryType(DeliveryTypeRequest request){

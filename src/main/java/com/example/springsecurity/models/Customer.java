@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -28,11 +27,13 @@ public class Customer {
 
     private double wallet= 500.00;
 
-    private String phoneNumber;
+    private String phoneNumber = null;
 
-    private LocalDate dob;
+    private String address = null;
 
-    private String sex;
+//    private LocalDate dob;
+
+
 
     public Customer(AppUser appUser, Long appuserid) {
         this.appUser = appUser;
