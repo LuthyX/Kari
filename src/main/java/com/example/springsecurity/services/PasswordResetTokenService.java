@@ -32,7 +32,7 @@ public class PasswordResetTokenService {
                 user
         );
         String name = user.getFirstName();
-        String link = "https://karip-d1f31.web.app/formreset" + tokenReset;
+        String link = "https://karip-d1f31.web.app/formreset/" + tokenReset;
         passwordResetTokenRepository.save(passwordResetToken);
         emailSender.send(email, tokenResetEmail(name, link));
         return "Sent";
