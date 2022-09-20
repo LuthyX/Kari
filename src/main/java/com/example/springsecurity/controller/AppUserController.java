@@ -4,6 +4,7 @@ import com.example.springsecurity.models.Package;
 import com.example.springsecurity.models.*;
 import com.example.springsecurity.request.*;
 import com.example.springsecurity.services.AppUserService;
+import com.example.springsecurity.services.PasswordResetTokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,8 @@ import java.util.List;
 public class AppUserController {
 
     private  final AppUserService appUserService;
+
+    private final PasswordResetTokenService passwordResetTokenService;
 
     @GetMapping( "/users")
     private ResponseEntity<List<AppUser>> getUsers(){
@@ -111,6 +114,19 @@ public class AppUserController {
     private List<Package> getPackageByCustomer(@PathVariable("id") Long id){
         return appUserService.getPackagesByCustomer(id);
 
+    }
+
+    @PostMapping("/emailreset")
+    private String emailForgotPassword(@RequestBody PasswordResetEmail passwordResetEmail){
+        String email = passwordResetEmail.getEmail();
+        return passwordResetTokenService.sendEmailToken(email);
+    }
+
+    @PostMapping("/passwordreset")
+    private String passwordReset(@RequestBody PasswordReset passwordReset){
+        String password = passwordReset.getPassword();
+        String tokenReset = passwordReset.getTokenReset();
+        return passwordResetTokenService.resetPassword(password, tokenReset);
     }
 
 //    @PostMapping("/create-checkout-session")

@@ -31,7 +31,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().equals("api/login") || request.getServletPath().equals("api/save/user") || request.getServletPath().equals("api/package/find")){
+        if(request.getServletPath().equals("api/login") || request.getServletPath().equals("api/save/user") || request.getServletPath().equals("api/package/find") || request.getServletPath().equals("api/emailreset") || request.getServletPath().equals("api/passwordreset")){
             filterChain.doFilter(request, response);
         }
         else {

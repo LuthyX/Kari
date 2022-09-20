@@ -39,7 +39,7 @@ public class AppUserService implements UserDetailsService{
     private final HistoryRepository historyRepository;
 
     private final ContactRepository contactRepository;
-//    private final ConfirmationTokenService confirmationTokenService;
+
 
 
     @Override
@@ -72,8 +72,6 @@ public class AppUserService implements UserDetailsService{
         appUser.setPassword(encodedPassword);
         appUserRepository.save(appUser);
         return "saved";
-
-
         }
 
         public List<History> getPayHistory(Long id){
